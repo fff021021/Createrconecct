@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creater connect | 歌い手とクリエイターを繋ぐ</title>
+    <meta name="description" content="歌い手とMIX師、絵師、動画師などのクリエイターを繋ぐ支援サイト。自分にぴったりのクリエイターを見つけよう。">
+    <link rel="stylesheet" href="./style.css">
+    <!-- Google Fonts: Inter and others for customization -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=M+PLUS+Rounded+1c&family=Noto+Sans+JP:wght@400;700&family=Sawarabi+Mincho&family=Kiwi+Maru&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header id="header">
+        <div class="container header-container">
+            <h1 class="logo">Creater connect</h1>
+            <nav>
+                <button id="nav-singer-btn" class="nav-btn active">依頼者（歌い手）</button>
+                <button id="nav-creator-btn" class="nav-btn">クリエイター登録</button>
+                <button id="auth-btn" class="nav-btn secondary-btn">ログイン</button>
+                <div id="user-profile" class="user-profile hidden">
+                    <span id="user-name"></span>
+                    <button id="logout-btn" class="logout-btn">ログアウト</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main id="app">
+        <!-- Hero Section -->
+        <section id="hero">
+            <div class="container hero-container">
+                <h2 class="hero-title">歌い手の想いを、プロの力で形に。</h2>
+                <p class="hero-subtitle">最適なクリエイターと出会い、最高の一作を作り上げましょう。</p>
+            </div>
+        </section>
+
+        <!-- Singer View: Search/Filter & Results -->
+        <section id="singer-view" class="view">
+            <div class="container">
+                <div class="filter-section">
+                    <h3>ジャンルを選択</h3>
+                    <div class="filter-chips">
+                        <button class="filter-chip" data-category="MIX">MIX</button>
+                        <button class="filter-chip" data-category="Illustration">イラスト</button>
+                        <button class="filter-chip" data-category="Video">動画</button>
+                        <button class="filter-chip" data-category="Designer">デザイナー</button>
+                        <button class="filter-chip" data-category="Other">その他</button>
+                    </div>
+                </div>
+                
+                <div id="creator-grid" class="creator-grid">
+                    <!-- Creator cards will be rendered here -->
+                    <div class="loading-state">読み込み中...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Creator View: Registration Form -->
+        <section id="creator-view" class="view hidden">
+            <div class="container form-layout">
+                <div class="form-container">
+                    <h3>クリエイター情報を登録</h3>
+                    <form id="creator-form">
+                        <div class="form-group">
+                            <label for="reg-name">名前（必須）</label>
+                            <input type="text" id="reg-name" required placeholder="例：サトウタロウ">
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-role">役職（必須）</label>
+                            <select id="reg-role" required>
+                                <option value="MIX">MIX師</option>
+                                <option value="Illustration">絵師</option>
+                                <option value="Video">動画師</option>
+                                <option value="Designer">デザイナー</option>
+                                <option value="Other">その他</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-price">依頼料金表（必須・テキストのみ）</label>
+                            <textarea id="reg-price" required placeholder="例：MIX 3,000円〜 / イラスト 5,000円〜"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-portfolio">ポートフォリオURL（必須・サイトや動画リンク）</label>
+                            <input type="url" id="reg-portfolio" required placeholder="https://youtube.com/... または 自サイト">
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-contact">依頼用リンク（必須・SNS/メール）</label>
+                            <input type="text" id="reg-contact" required placeholder="例：Twitter DM, email@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-genre">得意ジャンル（任意）</label>
+                            <input type="text" id="reg-genre" placeholder="例：ロック、バラード、中性的な声">
+                        </div>
+
+                        <hr>
+                        <h4>カードのカスタマイズ</h4>
+                        <div class="custom-grid">
+                            <div class="form-group">
+                                <label for="reg-bg-color">背景色</label>
+                                <input type="color" id="reg-bg-color" value="#ffffff">
+                            </div>
+                            <div class="form-group">
+                                <label for="reg-text-color">文字色</label>
+                                <input type="color" id="reg-text-color" value="#333333">
+                            </div>
+                            <div class="form-group">
+                                <label for="reg-font">フォント</label>
+                                <select id="reg-font">
+                                    <option value="'Inter', sans-serif">標準 (Inter)</option>
+                                    <option value="'Noto Sans JP', sans-serif">明瞭 (Noto Sans)</option>
+                                    <option value="'M PLUS Rounded 1c', sans-serif">丸ゴシック</option>
+                                    <option value="'Sawarabi Mincho', serif">明朝体</option>
+                                    <option value="'Kiwi Maru', serif">手書き風</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="submit-btn">登録を完了する</button>
+                    </form>
+                </div>
+
+                <div class="preview-container">
+                    <h3>プレビュー</h3>
+                    <div id="card-preview-wrapper" class="card-preview">
+                        <!-- Live preview card -->
+                        <div class="creator-card" id="preview-card">
+                            <span class="role-tag" id="preview-role">役職</span>
+                            <h4 id="preview-name">お名前</h4>
+                            <div class="price-box" id="preview-price">料金設定</div>
+                            <div class="genre-tag" id="preview-genre">得意ジャンル</div>
+                            <div class="card-footer">
+                                <span class="link-hint">ポートフォリオ・連絡先はこちら</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Portfolio Preview Modal -->
+    <div id="modal-overlay" class="modal-overlay hidden">
+        <div class="modal-content">
+            <button id="modal-close" class="modal-close">&times;</button>
+            <div id="modal-body">
+                <div class="modal-header">
+                    <h3 id="modal-creator-name">クリエイター名</h3>
+                    <span id="modal-creator-role" class="role-tag">役職</span>
+                </div>
+                <div id="embed-container" class="embed-container">
+                    <!-- iframe or player will be inserted here -->
+                    <div class="embed-skeleton">読み込み中...</div>
+                </div>
+                <div class="modal-footer">
+                    <p id="modal-price-text" class="modal-price-text"></p>
+                    <div class="modal-links">
+                        <a id="modal-contact-link" href="#" class="modal-btn contact-btn" target="_blank">依頼する（SNS/メールへ）</a>
+                        <a id="modal-direct-link" href="#" class="modal-btn" target="_blank">サイトを直接開く</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer id="footer">
+        <div class="container footer-container">
+            <p>&copy; 2026 Creater connect. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script type="module" src="./main.js"></script>
+</body>
+</html>
