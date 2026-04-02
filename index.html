@@ -16,9 +16,11 @@
         <div class="container header-container">
             <h1 class="logo">Creater connect</h1>
             <nav>
-                <button id="nav-singer-btn" class="nav-btn active">依頼者（歌い手）</button>
-                <button id="nav-creator-btn" class="nav-btn">クリエイター登録</button>
-                <button id="auth-btn" class="nav-btn secondary-btn">ログイン</button>
+                <button id="nav-singer-btn" class="nav-btn active">依頼者</button>
+                <button id="nav-creator-btn" class="nav-btn hidden">クリエイター登録</button>
+                <div id="auth-container">
+                    <button id="login-google-btn" class="nav-btn login-btn google">Googleでログイン</button>
+                </div>
                 <div id="user-profile" class="user-profile hidden">
                     <span id="user-name"></span>
                     <button id="logout-btn" class="logout-btn">ログアウト</button>

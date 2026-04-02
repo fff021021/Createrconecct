@@ -7,7 +7,8 @@ let currentCategory = 'all';
 
 // DOM Elements
 const app = document.getElementById('app');
-const authBtn = document.getElementById('auth-btn');
+const authContainer = document.getElementById('auth-container');
+const loginGoogleBtn = document.getElementById('login-google-btn');
 const logoutBtn = document.getElementById('logout-btn');
 const userProfile = document.getElementById('user-profile');
 const userNameDisplay = document.getElementById('user-name');
@@ -61,12 +62,12 @@ async function checkUser() {
 function handleAuthState(user) {
     currentUser = user;
     if (user) {
-        authBtn.classList.add('hidden');
+        authContainer.classList.add('hidden');
         userProfile.classList.remove('hidden');
         userNameDisplay.textContent = user.user_metadata.full_name || user.email;
         navCreatorBtn.classList.remove('hidden');
     } else {
-        authBtn.classList.remove('hidden');
+        authContainer.classList.remove('hidden');
         userProfile.classList.add('hidden');
         navCreatorBtn.classList.add('hidden');
     }
@@ -120,16 +121,18 @@ function setupEventListeners() {
     });
 
     // Auth
-    authBtn.addEventListener('click', async () => {
-        // For simplicity in the demo, we'll suggest Google or Discord
-        // But the user needs to enable them in Supabase console first.
-        // We'll default to a sign-in modal/helper.
-        await supabase.auth.signInWithOAuth({
-            provider: 'discord', // Change to 'google' or 'twitter' as needed
+    loginGoogleBtn.addEventListener('click', async () => {
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
             options: {
+                queryParams: {
+                    access_type: 'offline',
+                    prompt: 'consent',
+                },
                 redirectTo: window.location.origin
             }
         });
+        if (error) console.error('Sign in error:', error);
     });
 
     logoutBtn.addEventListener('click', async () => {

@@ -70,6 +70,29 @@ header {
     color: var(--primary-color);
 }
 
+.auth-container {
+    display: flex;
+    gap: 8px;
+}
+
+.login-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.login-btn.google {
+    background: #fff;
+    color: #555;
+    border: 1px solid #ddd;
+}
+
+.login-btn.x-btn {
+    background: #000000;
+    color: #fff;
+    border: none;
+}
+
 .user-profile {
     display: flex;
     align-items: center;
