@@ -340,7 +340,7 @@ function openModal(creator) {
             <button id="modal-delete-btn" class="modal-btn delete-btn">自分の情報を削除</button>
             <button id="modal-edit-btn" class="modal-btn edit-btn">情報を再編集</button>
         `;
-        modalBody.insertBefore(manageBox, modalPriceText);
+        modalPriceText.parentNode.insertBefore(manageBox, modalPriceText);
         
         document.getElementById('modal-delete-btn').onclick = async () => {
             if (confirm('本当に削除しますか？')) {
