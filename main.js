@@ -3,13 +3,16 @@ import { supabase } from './supabase.js';
 // Application State
 let creators = [];
 let currentUser = null;
+let myProfile = null;
 let currentCategory = 'all';
+let debounceTimer;
 
 // DOM Elements
 const app = document.getElementById('app');
 const authContainer = document.getElementById('auth-container');
 const loginGoogleBtn = document.getElementById('login-google-btn');
 const logoutBtn = document.getElementById('logout-btn');
+const statusMessage = document.getElementById('status-message');
 const userProfile = document.getElementById('user-profile');
 const userNameDisplay = document.getElementById('user-name');
 const singerView = document.getElementById('singer-view');
@@ -26,6 +29,7 @@ const modalClose = document.getElementById('modal-close');
 const modalCreatorName = document.getElementById('modal-creator-name');
 const modalCreatorRole = document.getElementById('modal-creator-role');
 const embedContainer = document.getElementById('embed-container');
+const modalBody = document.querySelector('.modal-body');
 const modalPriceText = document.getElementById('modal-price-text');
 const modalContactLink = document.getElementById('modal-contact-link');
 const modalDirectLink = document.getElementById('modal-direct-link');
@@ -48,15 +52,48 @@ const inputFont = document.getElementById('reg-font');
 
 // Initialize
 async function init() {
-    checkUser();
+    // Check if Supabase keys are provided (for help during setup)
+    const isConfigured = import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY;
+    if (!isConfigured) {
+        showStatus('設定情報（URL/Key）が未設定です。開発ガイドを確認してください。', true);
+    }
+
+    await checkUser();
     await loadCreators();
     setupEventListeners();
     renderCreators();
 }
 
+function showStatus(msg, isError = false) {
+    statusMessage.textContent = msg;
+    statusMessage.classList.remove('hidden');
+    if (isError) {
+        statusMessage.style.color = '#cc0000';
+        statusMessage.style.background = '#ffeeee';
+    } else {
+        statusMessage.style.color = '#006600';
+        statusMessage.style.background = '#eeffee';
+    }
+}
+
 async function checkUser() {
     const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+        await checkUserProfile(user.id);
+    }
     handleAuthState(user);
+}
+
+async function checkUserProfile(userId) {
+    const { data, error } = await supabase
+        .from('creators')
+        .select('*')
+        .eq('user_id', userId)
+        .maybeSingle();
+    
+    if (!error) {
+        myProfile = data;
+    }
 }
 
 function handleAuthState(user) {
@@ -66,10 +103,14 @@ function handleAuthState(user) {
         userProfile.classList.remove('hidden');
         userNameDisplay.textContent = user.user_metadata.full_name || user.email;
         navCreatorBtn.classList.remove('hidden');
+        
+        // Update nav button text based on profile status
+        navCreatorBtn.textContent = myProfile ? '登録情報の編集' : 'クリエイター登録';
     } else {
         authContainer.classList.remove('hidden');
         userProfile.classList.add('hidden');
         navCreatorBtn.classList.add('hidden');
+        myProfile = null;
     }
 }
 
@@ -91,7 +132,15 @@ async function loadCreators() {
 function setupEventListeners() {
     // Navigation
     navSingerBtn.addEventListener('click', () => switchView('singer'));
-    navCreatorBtn.addEventListener('click', () => switchView('creator'));
+    navCreatorBtn.addEventListener('click', () => {
+        if (myProfile) {
+            prepareEdit(myProfile);
+        } else {
+            switchView('creator');
+            creatorForm.reset();
+            updatePreview();
+        }
+    });
 
     // Filter
     filterChips.forEach(chip => {
@@ -117,7 +166,10 @@ function setupEventListeners() {
 
     // Form Live Preview
     [inputName, inputRole, inputPrice, inputGenre, inputBgColor, inputTextColor, inputFont].forEach(el => {
-        el.addEventListener('input', updatePreview);
+        el.addEventListener('input', () => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(updatePreview, 300); // 300ms delay for IME stability
+        });
     });
 
     // Auth
@@ -132,7 +184,10 @@ function setupEventListeners() {
                 redirectTo: window.location.origin
             }
         });
-        if (error) console.error('Sign in error:', error);
+        if (error) {
+            console.error('Sign in error:', error);
+            showStatus('ログインエラー：Supabase側のGoogle設定（Provider）を確認してください。', true);
+        }
     });
 
     logoutBtn.addEventListener('click', async () => {
@@ -179,12 +234,11 @@ function setupEventListeners() {
             return;
         }
 
+        await checkUserProfile(currentUser.id); // Refresh myProfile
         await loadCreators();
         renderCreators();
         
-        alert('クリエイター情報の更新が完了しました！');
-        creatorForm.reset();
-        updatePreview();
+        alert(myProfile ? '登録情報の更新が完了しました！' : 'プロフィールを登録しました！');
         switchView('singer');
     });
 }
@@ -293,6 +347,8 @@ function openModal(creator) {
                 const { error } = await supabase.from('creators').delete().eq('id', creator.id);
                 if (!error) {
                     closeModal();
+                    myProfile = null; // Clear local state
+                    handleAuthState(currentUser); // Refresh UI (button text etc.)
                     await loadCreators();
                     renderCreators();
                     alert('削除しました。');

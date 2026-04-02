@@ -99,6 +99,16 @@ header {
     gap: 10px;
 }
 
+.status-message {
+    font-size: 0.8rem;
+    color: #cc0000;
+    margin-left: 10px;
+    background: #ffeeee;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid #ffcccc;
+}
+
 #user-name {
     font-size: 0.9rem;
     font-weight: 700;
