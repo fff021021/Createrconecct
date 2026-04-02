@@ -468,17 +468,134 @@ footer {
 }
 
 /* Responsive */
-@media (max-width: 900px) {
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    :root {
+        --container-width: 100%;
+    }
+
+    .container {
+        padding: 0 15px;
+    }
+
+    /* Header */
+    .header-container {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
+
+    .logo {
+        font-size: 1.3rem;
+    }
+
+    .auth-container {
+        justify-content: center;
+        width: 100%;
+    }
+
+    .nav-btn {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.9rem;
+    }
+
+    /* Hero */
+    #hero {
+        padding: 2.5rem 1rem;
+    }
+
+    .hero-title {
+        font-size: 1.7rem;
+        line-height: 1.3;
+    }
+
+    .hero-subtitle {
+        font-size: 0.95rem;
+    }
+
+    /* Filter - Horizontal Scroll */
+    .filter-chips {
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 10px;
+        -webkit-overflow-scrolling: touch;
+        gap: 8px;
+    }
+
+    .filter-chip {
+        flex-shrink: 0;
+        font-size: 0.85rem;
+        padding: 0.4rem 1rem;
+    }
+
+    /* Grid */
+    .creator-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    /* Form Layout */
     .form-layout {
         grid-template-columns: 1fr;
+        padding: 1.5rem 0;
+        gap: 2rem;
     }
+
+    .form-container {
+        padding: 1.2rem;
+    }
+
     .preview-container {
         position: static;
+        order: -1; /* Show preview above form on mobile */
     }
+
+    .card-preview {
+        padding: 1rem;
+    }
+
+    /* Modal */
+    .modal-content {
+        padding: 1.2rem;
+        width: 98%;
+        max-height: 95vh;
+    }
+
+    .modal-header h3 {
+        font-size: 1.2rem;
+        display: block;
+        margin-bottom: 5px;
+    }
+
     .embed-container {
-        aspect-ratio: 1 / 1;
+        aspect-ratio: 16 / 9; /* Keep 16:9 but slightly smaller */
+        margin-bottom: 1rem;
     }
+
     .modal-links {
         flex-direction: column;
+        gap: 10px;
+    }
+
+    .modal-btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 400px) {
+    .header-container {
+        gap: 8px;
+    }
+    
+    .auth-container {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .hero-title {
+        font-size: 1.5rem;
     }
 }
