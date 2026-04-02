@@ -140,9 +140,26 @@ header {
     color: #4b5563;
 }
 
-/* Common */
+/* Common Utilities */
 .hidden {
     display: none !important;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+/* Visibility */
+@media (max-width: 768px) {
+    .pc-only {
+        display: none !important;
+    }
+}
+
+@media (min-width: 769px) {
+    .sp-only {
+        display: none !important;
+    }
 }
 
 /* Filter Section */
